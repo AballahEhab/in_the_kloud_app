@@ -6,7 +6,7 @@ class ProductsDetailsService {
 
   Future<Response> getProductsById(
           String tokenValue, int productId) async =>
-      WebApiRequest(
+      EndPointRequest(
               endPoint: EndPoint(path: '/products/$productId'),
               headers: {AppStrings.tokenKey: AppStrings.tokenPrefix+tokenValue},
               requestMethod: HttpRequestMethod.GET)

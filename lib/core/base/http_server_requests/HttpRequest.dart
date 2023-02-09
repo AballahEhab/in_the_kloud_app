@@ -1,6 +1,7 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
+import 'package:in_the_kloud_app/core/base/http_server_requests/ResultData.dart';
+import 'package:in_the_kloud_app/core/base/models/master_model.dart';
 import 'package:in_the_kloud_app/resources/Strings.dart';
 import 'package:in_the_kloud_app/resources/constants.dart';
 
@@ -18,14 +19,14 @@ class EndPoint {
   Uri toUri() => Uri.https(absoluteUrl, path, queryParameters);
 }
 
-class WebApiRequest {
+class EndPointRequest {
   EndPoint endPoint;
-  Map<String, dynamic>? body;
+  MasterModel? body;
   Map<String, String>? headers;
 
   HttpRequestMethod requestMethod;
 
-  WebApiRequest(
+  EndPointRequest(
       {required this.endPoint,
       this.body,
       this.headers,
@@ -34,9 +35,9 @@ class WebApiRequest {
     headers?.addAll(Constants.DeafualtHttpRequestHeaders);
   }
 
-  Future<http.Response> proceedWithRequest({http.Client? client}) {
+  Future<http.Response> _proceedWithRequest({http.Client? client}) {
     client ??= http.Client();
-    var bodyJson = jsonEncode(body);
+    var bodyJson = jsonEncode(body?.toJson()??{});
     switch (requestMethod) {
       case HttpRequestMethod.GET:
         return client.get(endPoint.toUri(), headers: headers);
@@ -47,9 +48,40 @@ class WebApiRequest {
       case HttpRequestMethod.PUT:
         return client.put(endPoint.toUri(), headers: headers, body: bodyJson);
       case HttpRequestMethod.DELETE:
-        return client.delete(endPoint.toUri(), headers: headers, body: bodyJson);
+        return client.delete(endPoint.toUri(),
+            headers: headers, body: bodyJson);
     }
   }
+
 }
+
+class WebApiHandler<RESPONSE_TYPE extends MasterModel> {
+
+   RESPONSE_TYPE Function() responseCreator;
+
+
+   EndPointRequest? _request;
+
+  WebApiHandler.hi(this._request,this.responseCreator);
+
+  // ResultData<RESPONSE_TYPE> getData(EndPointRequest _request) {
+  //   try {
+  //     var response = _request._proceedWithRequest();
+  //     (RESPONSE_TYPE).fromJson({});
+  //   } catch (e) {
+  //
+  //
+  //   }
+  // return ResultData.success();
+  // }
+}
+
+typedef ResponseBuilder<S> = S Function();
+
+
+
+Future<ResultData<RESPONSE_TYPE>> sentRequest<RESPONSE_TYPE extends MasterModel>(EndPointRequest request);
+
+
 
 enum HttpRequestMethod { GET, POST, PATCH, PUT, DELETE }

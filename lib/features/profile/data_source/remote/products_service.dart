@@ -5,7 +5,7 @@ import 'package:in_the_kloud_app/resources/Strings.dart';
 
 class UserProfileService {
 
-  Future<Response> getDetailedUserDataById(int userId, String tokenValue) async => WebApiRequest(
+  Future<Response> getDetailedUserDataById(int userId, String tokenValue) async => EndPointRequest(
           endPoint: EndPoint(path: '/users/$userId'),
           headers: {AppStrings.tokenKey: AppStrings.tokenPrefix + tokenValue},
           requestMethod: HttpRequestMethod.GET)
@@ -13,7 +13,7 @@ class UserProfileService {
 
   Future<Response> updateUserData(
           String tokenValue, DetailedUserData userData) async =>
-      WebApiRequest(
+      EndPointRequest(
   endPoint: EndPoint(path: '/users/${userData.id}'),
   body: userData.toJson(),
   requestMethod: HttpRequestMethod.PUT)
