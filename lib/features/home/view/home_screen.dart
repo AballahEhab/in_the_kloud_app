@@ -39,6 +39,8 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
+  int navIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     SizeConfig sizeConfig = initSizeConfig(context);
@@ -46,26 +48,57 @@ class _HomeScreenState extends State<HomeScreen>
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: AppColors.lynxWhite,
-          centerTitle: true,
-          title: const Text(
-            'Home',
-            style: TextStyle(color: AppColors.LightGrey),
+          appBar: AppBar(
+            backgroundColor: AppColors.lynxWhite,
+            centerTitle: true,
+            title: const Text(
+              'Home',
+              style: TextStyle(color: AppColors.LightGrey),
+            ),
+            iconTheme: Theme.of(context)
+                .iconTheme
+                .copyWith(color: AppColors.LightGrey),
+            actions: const [
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+              )
+            ],
+            elevation: 0,
           ),
-          iconTheme:
-              Theme.of(context).iconTheme.copyWith(color: AppColors.LightGrey),
-          actions: [
-            const Icon(
-              Icons.arrow_forward_ios_rounded,
-            )
-          ],
-          elevation: 0,
-        ),
-        extendBody: true,
-        drawer: _AppDrawer(sizeConfig: sizeConfig),
-        body: const TabBarView(children: [HomeTab(), CartTab()]),
-        bottomNavigationBar: Container(
+          extendBody: true,
+          drawer: _AppDrawer(sizeConfig: sizeConfig),
+          // body: const TabBarView(children: [HomeTab(), CartTab()]),
+          body: [const HomeTab(), const CartTab()].elementAt(navIndex),
+          // floatingActionButton: FloatingActionButton(onPressed: () {},),
+          // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
+          bottomNavigationBar: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: BottomNavigationBar(
+              items: const [
+                BottomNavigationBarItem(icon: Icon(Icons.ac_unit), label: "llll",),
+                BottomNavigationBarItem(icon: Icon(Icons.ac_unit),label: ""),
+                BottomNavigationBarItem(icon: Icon(Icons.ac_unit), label: "ll"),
+              ],
+              enableFeedback: true,
+              currentIndex: (navIndex<1)?navIndex:navIndex+1,
+              type: BottomNavigationBarType.fixed,
+              onTap: (newIndex) => setState(() {
+                if(newIndex<1)
+                  navIndex = newIndex;
+                if(newIndex==1)
+                  navIndex=navIndex;
+                if(newIndex>1)
+                  navIndex = newIndex-1;
+
+              }),
+              landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
+
+            ),
+          )
+          // ,
+          // persistentFooterButtons: [ElevatedButton(onPressed: (){}, child: const Text("test footer")),ElevatedButton(onPressed: (){}, child: const Text("test footer")),ElevatedButton(onPressed: (){}, child: const Text("test footer"))],
+          /*Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               gradient: const LinearGradient(
@@ -100,8 +133,9 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             ],
           ),
-        ),
-      ),
+        )*/
+
+          ),
     );
   }
 }
@@ -188,11 +222,16 @@ class _AppDrawer extends StatelessWidget {
                       style: BorderStyle.solid),
                   image: DecorationImage(image: NetworkImage(userData.image!)),
                 )),
-            Center(child: Padding(
-              padding:  EdgeInsets.only(top:sizeConfig.toDynamicUnit(8),bottom:sizeConfig.toDynamicUnit(39)),
-              child: Text(userData.getFullName(),style:Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: AppColors.LightGrey
-              )),
+            Center(
+                child: Padding(
+              padding: EdgeInsets.only(
+                  top: sizeConfig.toDynamicUnit(8),
+                  bottom: sizeConfig.toDynamicUnit(39)),
+              child: Text(userData.getFullName(),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall
+                      ?.copyWith(color: AppColors.LightGrey)),
             )),
             const Divider(),
             Expanded(
@@ -213,14 +252,14 @@ class _AppDrawer extends StatelessWidget {
                     onTap: () {
                       showCupertinoModalPopup<void>(
                         context: context,
-                        builder: (BuildContext context) => LogOutDialog(),
+                        builder: (BuildContext context) => const LogOutDialog(),
                       );
                     },
                   ),
                 ],
               ),
             ),
-             Text('www.inthekloud.com')
+            const Text('www.inthekloud.com')
           ],
         ), // Populate the Drawer in the next step.
       ),

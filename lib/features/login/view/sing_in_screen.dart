@@ -127,6 +127,7 @@ class SignInScreen extends StatelessWidget {
             child: AppInputField(
                 context: context,
                 title: AppStrings.userNameLabelText,
+                initialText: "kminchelle,",
                 sizeConfig: sizeConfig,
                 trailingIcon: Icons.person,
                 enabled: true,
@@ -141,6 +142,7 @@ class SignInScreen extends StatelessWidget {
                 vertical: Constants.$15px),
             child: AppInputField(
               context: context,
+              initialText: "0lelplR)",
               title: AppStrings.passwordLabelText,
               sizeConfig: sizeConfig,
               trailingIcon: Icons.lock,
